@@ -1,0 +1,109 @@
+<button class="btn btn-primary" (click)="open(content, false)">
+  Create Stations
+</button>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Comment</th>
+      <th scope="col">Created_at</th>
+      <th scope="col">Updated_at</th>
+      <th scope="col">api_key</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let stations of stationsList; let i = index">
+      <th scope="row">{{ i }}</th>
+      <td>{{ stations.name }}</td>
+      <td>{{ stations.comment }}</td>
+      <td>{{ stations.created_at }}</td>
+      <td>{{ stations.updated_at }}</td>
+      <td>{{ stations.api_key }}</td>
+      <td>
+        <button
+          class="btn btn-success"
+          (click)="editStation(content, stations)"
+        >
+          Edit
+        </button>
+        &nbsp;
+        <button class="btn btn-danger" (click)="deleteStation(stations.id)">
+          Delete
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title" *ngIf="!createStation">
+      Create Station
+    </h4>
+    <h4 class="modal-title" id="modal-basic-title" *ngIf="createStation">
+      Edit Station
+    </h4>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    ></button>
+  </div>
+  <form [formGroup]="stationsForm" (ngSubmit)="onSubmit()">
+    <div class="form-group row">
+      <label for="exampleInput1" class="col-sm-2 col-form-label">Name :</label>
+      <div class="col-sm-10">
+        <input
+          type="text"
+          class="form-control"
+          formControlName="name"
+          placeholder="Enter Name"
+        />
+      </div>
+    </div>
+    &nbsp;
+    <div class="form-group row">
+      <label for="exampleInput1" class="col-sm-2 col-form-label"
+        >Comment:</label
+      >
+      <div class="col-sm-10">
+        <input
+          type="text"
+          class="form-control"
+          formControlName="comment"
+          placeholder="Enter Comment"
+        />
+      </div>
+    </div>
+    &nbsp;
+    <div class="flex">
+      <button
+        type="submit"
+        class="btn btn-outline-primary buttons"
+        (click)="modal.close('submit')"
+      >
+        Cancel
+      </button>
+      <button
+        *ngIf="!createStation"
+        type="submit"
+        class="btn btn-primary buttons"
+        (click)="onSubmit()"
+      >
+        Submit
+      </button>
+      <button
+        *ngIf="createStation"
+        type="submit"
+        class="btn btn-success buttons"
+        (click)="editStationForm()"
+      >
+        Edit
+      </button>
+    </div>
+  </form>
+</ng-template>

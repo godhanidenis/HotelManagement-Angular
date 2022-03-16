@@ -1,0 +1,133 @@
+<button class="btn btn-primary" (click)="open(content, false)">
+  Create Users
+</button>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Comment</th>
+      <th scope="col">Created_at</th>
+      <th scope="col">Updated_at</th>
+      <th scope="col">Login</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let users of userList; let i = index">
+      <th scope="row">{{ i }}</th>
+      <td>{{ users.name }}</td>
+      <td>{{ users.comment }}</td>
+      <td>{{ users.created_at }}</td>
+      <td>{{ users.updated_at }}</td>
+      <td>{{ users.login }}</td>
+      <td>
+        <button class="btn btn-success" (click)="editUser(content, users)">
+          Edit
+        </button>
+        &nbsp;
+        <button class="btn btn-danger" (click)="deleteUser(users.id)">
+          Delete
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title" *ngIf="!createUser">
+      Create User
+    </h4>
+    <h4 class="modal-title" id="modal-basic-title" *ngIf="createUser">
+      Edit User
+    </h4>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    ></button>
+  </div>
+  <form [formGroup]="usersForm">
+    <div class="form-group row">
+      <label for="exampleInput1" class="col-sm-2 col-form-label">Name :</label>
+      <div class="col-sm-10">
+        <input
+          type="text"
+          class="form-control"
+          formControlName="name"
+          placeholder="Enter Name"
+        />
+      </div>
+    </div>
+    &nbsp;
+    <div class="form-group row">
+      <label for="exampleInput1" class="col-sm-2 col-form-label"
+        >Comment:</label
+      >
+      <div class="col-sm-10">
+        <input
+          type="text"
+          class="form-control"
+          formControlName="comment"
+          placeholder="Enter Comment"
+        />
+      </div>
+    </div>
+    &nbsp;
+    <div class="form-group row">
+      <label for="exampleInput1" class="col-sm-2 col-form-label">Login :</label>
+      <div class="col-sm-10">
+        <input
+          type="text"
+          class="form-control"
+          formControlName="login"
+          placeholder="Enter Login"
+        />
+      </div>
+    </div>
+    &nbsp;
+    <div class="form-group row" *ngIf="!createUser">
+      <label for="exampleInput1" class="col-sm-2 col-form-label"
+        >Password:</label
+      >
+      <div class="col-sm-10">
+        <input
+          type="text"
+          class="form-control"
+          formControlName="password"
+          placeholder="Enter Password"
+        />
+      </div>
+    </div>
+    &nbsp;
+
+    <div class="flex">
+      <button
+        type="submit"
+        class="btn btn-outline-primary buttons"
+        (click)="modal.close('submit')"
+      >
+        Cancel
+      </button>
+      <button
+        *ngIf="!createUser"
+        type="submit"
+        class="btn btn-primary buttons"
+        (click)="onSubmit()"
+      >
+        Submit
+      </button>
+      <button
+        *ngIf="createUser"
+        type="submit"
+        class="btn btn-success buttons"
+        (click)="editUserForm()"
+      >
+        Edit
+      </button>
+    </div>
+  </form>
+</ng-template>
