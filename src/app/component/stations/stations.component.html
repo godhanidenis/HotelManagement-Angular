@@ -1,4 +1,9 @@
-<button class="btn btn-primary" (click)="open(content, false)">
+<button
+  class="btn btn-primary"
+  data-bs-toggle="modal"
+  data-bs-target="#StationModal"
+  (click)="openCreateStationModal()"
+>
   Create Stations
 </button>
 
@@ -15,22 +20,24 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let stations of stationsList; let i = index">
+    <tr *ngFor="let station of stationsList; let i = index">
       <th scope="row">{{ i }}</th>
-      <td>{{ stations.name }}</td>
-      <td>{{ stations.comment }}</td>
-      <td>{{ stations.created_at }}</td>
-      <td>{{ stations.updated_at }}</td>
-      <td>{{ stations.api_key }}</td>
+      <td>{{ station.name }}</td>
+      <td>{{ station.comment }}</td>
+      <td>{{ station.created_at }}</td>
+      <td>{{ station.updated_at }}</td>
+      <td>{{ station.api_key }}</td>
       <td>
         <button
           class="btn btn-success"
-          (click)="editStation(content, stations)"
+          data-bs-toggle="modal"
+          data-bs-target="#StationModal"
+          (click)="openEditStationModal(station)"
         >
           Edit
         </button>
         &nbsp;
-        <button class="btn btn-danger" (click)="deleteStation(stations.id)">
+        <button class="btn btn-danger" (click)="deleteStation(station.id)">
           Delete
         </button>
       </td>
@@ -38,74 +45,89 @@
   </tbody>
 </table>
 
-<ng-template #content let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title" *ngIf="!createStation">
-      Create Station
-    </h4>
-    <h4 class="modal-title" id="modal-basic-title" *ngIf="createStation">
-      Edit Station
-    </h4>
-    <button
-      type="button"
-      class="btn-close"
-      aria-label="Close"
-      (click)="modal.dismiss('Cross click')"
-    ></button>
+<div
+  class="modal fade"
+  #stationModal
+  id="StationModal"
+  tabindex="-1"
+  aria-labelledby="StationModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title" *ngIf="isCreateStation">
+          Create Station
+        </h4>
+        <h4 class="modal-title" id="modal-basic-title" *ngIf="!isCreateStation">
+          Edit Station
+        </h4>
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+      <form [formGroup]="stationsForm">
+        <div class="form-group row">
+          <label for="exampleInput1" class="col-sm-2 col-form-label"
+            >Name :</label
+          >
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="name"
+              placeholder="Enter Name"
+            />
+          </div>
+        </div>
+        &nbsp;
+        <div class="form-group row">
+          <label for="exampleInput1" class="col-sm-2 col-form-label"
+            >Comment:</label
+          >
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="comment"
+              placeholder="Enter Comment"
+            />
+          </div>
+        </div>
+        &nbsp;
+        <div class="flex">
+          <button
+            type="submit"
+            class="btn btn-outline-primary buttons"
+            data-bs-dismiss="modal"
+          >
+            Cancel
+          </button>
+          <button
+            *ngIf="isCreateStation"
+            type="submit"
+            class="btn btn-primary buttons"
+            data-bs-dismiss="modal"
+            (click)="createStation()"
+            [disabled]="!stationsForm.valid"
+          >
+            Submit
+          </button>
+          <button
+            *ngIf="!isCreateStation"
+            type="submit"
+            class="btn btn-success buttons"
+            data-bs-dismiss="modal"
+            (click)="editStation()"
+            [disabled]="!stationsForm.valid"
+          >
+            Edit
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
-  <form [formGroup]="stationsForm" (ngSubmit)="onSubmit()">
-    <div class="form-group row">
-      <label for="exampleInput1" class="col-sm-2 col-form-label">Name :</label>
-      <div class="col-sm-10">
-        <input
-          type="text"
-          class="form-control"
-          formControlName="name"
-          placeholder="Enter Name"
-        />
-      </div>
-    </div>
-    &nbsp;
-    <div class="form-group row">
-      <label for="exampleInput1" class="col-sm-2 col-form-label"
-        >Comment:</label
-      >
-      <div class="col-sm-10">
-        <input
-          type="text"
-          class="form-control"
-          formControlName="comment"
-          placeholder="Enter Comment"
-        />
-      </div>
-    </div>
-    &nbsp;
-    <div class="flex">
-      <button
-        type="submit"
-        class="btn btn-outline-primary buttons"
-        (click)="modal.close('submit')"
-      >
-        Cancel
-      </button>
-      <button
-        *ngIf="!createStation"
-        type="submit"
-        class="btn btn-primary buttons"
-        (click)="onSubmit()"
-        [disabled]="!stationsForm.valid"
-      >
-        Submit
-      </button>
-      <button
-        *ngIf="createStation"
-        type="submit"
-        class="btn btn-success buttons"
-        (click)="editStationForm()"
-        [disabled]="!stationsForm.valid"
-      >
-        Edit
-      </button>
-    </div>
-  </form>
-</ng-template>
+</div>

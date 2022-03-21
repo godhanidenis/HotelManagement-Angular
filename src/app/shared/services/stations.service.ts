@@ -17,15 +17,15 @@ export class StationsService {
     return this.http.get(this.url + 'stations');
   }
 
-  creatstations(data: stations) {
+  creatstation(data: stations) {
     return this.http.post(this.url + 'stations', data);
   }
 
-  updatestations(id: string, data: stations) {
+  updatestation(id: string, data: stations) {
     return this.http.patch(this.url + `stations/${id}`, data);
   }
 
-  deletestations(id: string) {
+  deletestation(id: string) {
     return this.http.delete(this.url + `stations/${id}`);
   }
 }

@@ -19,15 +19,15 @@ export class UsersService {
     return this.http.get(this.url + 'users');
   }
 
-  creatUsers(data: users) {
+  creatUser(data: users) {
     return this.http.post(this.url + 'users', data);
   }
 
-  updateUsers(id: string, data: users) {
+  updateUser(id: string, data: users) {
     return this.http.patch(this.url + `users/${id}`, data);
   }
 
-  deleteUsers(id: string) {
+  deleteUser(id: string) {
     return this.http.delete(this.url + `users/${id}`);
   }
 }

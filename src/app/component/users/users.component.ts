@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { UsersService } from '../../shared/services/users.service';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -9,21 +9,21 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./users.component.scss'],
 })
 export class UsersComponent implements OnInit {
-  userList: any;
-  closeResult = '';
-  createUser: boolean = false;
-  userId = '';
+  @ViewChild('userModal') userModal: any;
 
-  usersForm = new FormGroup({
-    name: new FormControl('', [Validators.required]),
-    comment: new FormControl(''),
-    login: new FormControl('', [Validators.required]),
-    password: new FormControl('', [Validators.required]),
-  });
-  constructor(
-    private usersService: UsersService,
-    private modalService: NgbModal
-  ) {}
+  userList: any;
+  isCreateUser: boolean = true;
+  userToBeUpdated: any;
+  userForm!: FormGroup;
+
+  constructor(private usersService: UsersService) {
+    this.userForm = new FormGroup({
+      name: new FormControl('', [Validators.required]),
+      comment: new FormControl(''),
+      login: new FormControl('', [Validators.required]),
+      password: new FormControl(''),
+    });
+  }
 
   ngOnInit(): void {
     this.getAllUsers();
@@ -35,62 +35,55 @@ export class UsersComponent implements OnInit {
         this.userList = res;
       },
       (error) => {
-        alert(error);
+        alert(error.error.error);
       }
     );
   }
 
-  open(content: any, condition: boolean) {
-    this.createUser = condition;
-    this.modalService
-      .open(content, { ariaLabelledBy: 'modal-basic-title' })
-      .result.then(
-        (result) => {
-          this.closeResult = `Closed with: ${result}`;
-        },
-        (reason) => {
-          this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-        }
-      );
+  openCreateUserModal() {
+    this.isCreateUser = true;
+    this.userForm.reset();
+    this.userForm.get('password')?.addValidators(Validators.required);
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
+  openEditUserModal(userToBeUpdated: any) {
+    this.isCreateUser = false;
+    this.userForm.get('password')?.clearValidators();
+    this.userForm.patchValue(userToBeUpdated);
+    this.userToBeUpdated = userToBeUpdated;
   }
 
-  onSubmit() {
-    this.usersService.creatUsers(this.usersForm.value).subscribe((res) => {
-      this.getAllUsers();
-    });
-  }
-
-  editUser(content: any, users: any) {
-    this.open(content, true);
-    this.usersForm.patchValue(users);
-    this.userId = users.id;
-  }
-
-  editUserForm() {
-    this.usersService
-      .updateUsers(this.userId, this.usersForm.value)
-      .subscribe((res) => {
-        this.getAllUsers();
-      });
-  }
-
-  deleteUser(id: any) {
-    this.usersService.deleteUsers(id).subscribe(
+  createUser() {
+    this.usersService.creatUser(this.userForm.value).subscribe(
       (res) => {
         this.getAllUsers();
       },
       (error) => {
-        alert(error);
+        alert(error.error.error);
+      }
+    );
+  }
+
+  editUser() {
+    this.usersService
+      .updateUser(this.userToBeUpdated.id, this.userForm.value)
+      .subscribe(
+        (res) => {
+          this.getAllUsers();
+        },
+        (error) => {
+          alert(error.error.error);
+        }
+      );
+  }
+
+  deleteUser(id: any) {
+    this.usersService.deleteUser(id).subscribe(
+      (res) => {
+        this.getAllUsers();
+      },
+      (error) => {
+        alert(error.error.error);
       }
     );
   }

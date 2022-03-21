@@ -1,4 +1,9 @@
-<button class="btn btn-primary" (click)="open(content, false)">
+<button
+  class="btn btn-primary"
+  data-bs-toggle="modal"
+  data-bs-target="#UserModal"
+  (click)="openCreateUserModal()"
+>
   Create Users
 </button>
 
@@ -15,19 +20,24 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let users of userList; let i = index">
+    <tr *ngFor="let user of userList; let i = index">
       <th scope="row">{{ i }}</th>
-      <td>{{ users.name }}</td>
-      <td>{{ users.comment }}</td>
-      <td>{{ users.created_at }}</td>
-      <td>{{ users.updated_at }}</td>
-      <td>{{ users.login }}</td>
+      <td>{{ user.name }}</td>
+      <td>{{ user.comment }}</td>
+      <td>{{ user.created_at }}</td>
+      <td>{{ user.updated_at }}</td>
+      <td>{{ user.login }}</td>
       <td>
-        <button class="btn btn-success" (click)="editUser(content, users)">
+        <button
+          class="btn btn-success"
+          data-bs-toggle="modal"
+          data-bs-target="#UserModal"
+          (click)="openEditUserModal(user)"
+        >
           Edit
         </button>
         &nbsp;
-        <button class="btn btn-danger" (click)="deleteUser(users.id)">
+        <button class="btn btn-danger" (click)="deleteUser(user.id)">
           Delete
         </button>
       </td>
@@ -35,102 +45,118 @@
   </tbody>
 </table>
 
-<ng-template #content let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title" *ngIf="!createUser">
-      Create User
-    </h4>
-    <h4 class="modal-title" id="modal-basic-title" *ngIf="createUser">
-      Edit User
-    </h4>
-    <button
-      type="button"
-      class="btn-close"
-      aria-label="Close"
-      (click)="modal.dismiss('Cross click')"
-      [disabled]="!usersForm.valid"
-    ></button>
-  </div>
-  <form [formGroup]="usersForm">
-    <div class="form-group row">
-      <label for="exampleInput1" class="col-sm-2 col-form-label">Name :</label>
-      <div class="col-sm-10">
-        <input
-          type="text"
-          class="form-control"
-          formControlName="name"
-          placeholder="Enter Name"
-        />
+<div
+  class="modal fade"
+  #userModal
+  id="UserModal"
+  tabindex="-1"
+  aria-labelledby="UserModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title" *ngIf="isCreateUser">
+          Create User
+        </h4>
+        <h4 class="modal-title" id="modal-basic-title" *ngIf="!isCreateUser">
+          Edit User
+        </h4>
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          data-bs-dismiss="modal"
+        ></button>
       </div>
-    </div>
-    &nbsp;
-    <div class="form-group row">
-      <label for="exampleInput1" class="col-sm-2 col-form-label"
-        >Comment:</label
-      >
-      <div class="col-sm-10">
-        <input
-          type="text"
-          class="form-control"
-          formControlName="comment"
-          placeholder="Enter Comment"
-        />
-      </div>
-    </div>
-    &nbsp;
-    <div class="form-group row">
-      <label for="exampleInput1" class="col-sm-2 col-form-label">Login :</label>
-      <div class="col-sm-10">
-        <input
-          type="text"
-          class="form-control"
-          formControlName="login"
-          placeholder="Enter Login"
-        />
-      </div>
-    </div>
-    &nbsp;
-    <div class="form-group row" *ngIf="!createUser">
-      <label for="exampleInput1" class="col-sm-2 col-form-label"
-        >Password:</label
-      >
-      <div class="col-sm-10">
-        <input
-          type="text"
-          class="form-control"
-          formControlName="password"
-          placeholder="Enter Password"
-        />
-      </div>
-    </div>
-    &nbsp;
+      <form [formGroup]="userForm">
+        <div class="form-group row">
+          <label for="exampleInput1" class="col-sm-2 col-form-label"
+            >Name :</label
+          >
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="name"
+              placeholder="Enter Name"
+            />
+          </div>
+        </div>
+        &nbsp;
+        <div class="form-group row">
+          <label for="exampleInput1" class="col-sm-2 col-form-label"
+            >Comment:</label
+          >
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="comment"
+              placeholder="Enter Comment"
+            />
+          </div>
+        </div>
+        &nbsp;
+        <div class="form-group row">
+          <label for="exampleInput1" class="col-sm-2 col-form-label"
+            >Login :</label
+          >
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="login"
+              placeholder="Enter Login"
+            />
+          </div>
+        </div>
+        &nbsp;
+        <div class="form-group row" *ngIf="isCreateUser">
+          <label for="exampleInput1" class="col-sm-2 col-form-label"
+            >Password:</label
+          >
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="password"
+              placeholder="Enter Password"
+            />
+          </div>
+        </div>
+        &nbsp;
 
-    <div class="flex">
-      <button
-        type="submit"
-        class="btn btn-outline-primary buttons"
-        (click)="modal.close('submit')"
-      >
-        Cancel
-      </button>
-      <button
-        *ngIf="!createUser"
-        type="submit"
-        class="btn btn-primary buttons"
-        (click)="onSubmit()"
-        [disabled]="!usersForm.valid"
-      >
-        Submit
-      </button>
-      <button
-        *ngIf="createUser"
-        type="submit"
-        class="btn btn-success buttons"
-        (click)="editUserForm()"
-        [disabled]="!usersForm.valid"
-      >
-        Edit
-      </button>
+        <div class="flex">
+          <button
+            type="submit"
+            class="btn btn-outline-primary buttons"
+            data-bs-dismiss="modal"
+          >
+            Cancel
+          </button>
+          <button
+            *ngIf="isCreateUser"
+            type="submit"
+            class="btn btn-primary buttons"
+            data-bs-dismiss="modal"
+            (click)="createUser()"
+            [disabled]="!userForm.valid"
+          >
+            Submit
+          </button>
+          <button
+            *ngIf="!isCreateUser"
+            type="submit"
+            class="btn btn-success buttons"
+            data-bs-dismiss="modal"
+            (click)="editUser()"
+            [disabled]="!userForm.valid"
+          >
+            Edit
+          </button>
+        </div>
+      </form>
     </div>
-  </form>
-</ng-template>
+  </div>
+</div>
