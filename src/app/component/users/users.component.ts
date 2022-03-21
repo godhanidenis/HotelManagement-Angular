@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { UsersService } from '../../shared/services/users.service';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-users',
   templateUrl: './users.component.html',
-  styleUrls: ['./users.component.css'],
+  styleUrls: ['./users.component.scss'],
 })
 export class UsersComponent implements OnInit {
   userList: any;
@@ -15,10 +15,10 @@ export class UsersComponent implements OnInit {
   userId = '';
 
   usersForm = new FormGroup({
-    name: new FormControl(''),
+    name: new FormControl('', [Validators.required]),
     comment: new FormControl(''),
-    login: new FormControl(''),
-    password: new FormControl(''),
+    login: new FormControl('', [Validators.required]),
+    password: new FormControl('', [Validators.required]),
   });
   constructor(
     private usersService: UsersService,

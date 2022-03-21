@@ -93,6 +93,7 @@
         type="submit"
         class="btn btn-primary buttons"
         (click)="onSubmit()"
+        [disabled]="!stationsForm.valid"
       >
         Submit
       </button>
@@ -101,6 +102,7 @@
         type="submit"
         class="btn btn-success buttons"
         (click)="editStationForm()"
+        [disabled]="!stationsForm.valid"
       >
         Edit
       </button>

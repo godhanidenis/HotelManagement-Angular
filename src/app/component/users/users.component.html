@@ -48,6 +48,7 @@
       class="btn-close"
       aria-label="Close"
       (click)="modal.dismiss('Cross click')"
+      [disabled]="!usersForm.valid"
     ></button>
   </div>
   <form [formGroup]="usersForm">
@@ -117,6 +118,7 @@
         type="submit"
         class="btn btn-primary buttons"
         (click)="onSubmit()"
+        [disabled]="!usersForm.valid"
       >
         Submit
       </button>
@@ -125,6 +127,7 @@
         type="submit"
         class="btn btn-success buttons"
         (click)="editUserForm()"
+        [disabled]="!usersForm.valid"
       >
         Edit
       </button>

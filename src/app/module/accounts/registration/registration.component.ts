@@ -1,26 +1,24 @@
 import { error } from '@angular/compiler/src/util';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/shared/services/auth.service';
 
 @Component({
   selector: 'app-registration',
   templateUrl: './registration.component.html',
-  styleUrls: ['./registration.component.css'],
+  styleUrls: ['./registration.component.scss'],
 })
 export class RegistrationComponent implements OnInit {
-  errorMessage: any;
+  errorMsg: any;
 
   repos: [] = [];
   profileForm = new FormGroup({
-    name: new FormControl(''),
+    name: new FormControl('', [Validators.required]),
     comment: new FormControl(''),
-    login: new FormControl(''),
-    password: new FormControl(''),
+    login: new FormControl('', [Validators.required]),
+    password: new FormControl('', [Validators.required]),
   });
-  showErrorMsg: boolean | undefined;
-  successMsg: boolean | undefined;
 
   constructor(private service: AuthService, private router: Router) {}
 
@@ -30,13 +28,10 @@ export class RegistrationComponent implements OnInit {
     this.service.registartiom(this.profileForm.value).subscribe(
       (res: any) => {
         console.log(res);
-        this.successMsg = true;
         this.router.navigate(['/auth/login']);
       },
       (error: any) => {
-        if (error) {
-          this.showErrorMsg = true;
-        }
+        this.errorMsg = error.error.error;
       }
     );
   }
