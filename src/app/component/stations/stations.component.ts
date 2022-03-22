@@ -39,6 +39,7 @@ export class StationsComponent implements OnInit {
     );
   }
 
+  // Open Create Station Modal.
   openCreateStationModal() {
     this.isCreateStation = true;
     this.stationsForm.reset();
